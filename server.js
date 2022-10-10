@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
-const dotenv = require("dotenv");
 
+const dotenv = require("dotenv");
+const http = require("http");
 // Xử lý uncaught exception
 
 process.on("uncaughtException", (err) => {
@@ -12,6 +13,10 @@ process.on("uncaughtException", (err) => {
 dotenv.config({ path: "./config.env" });
 
 const app = require("./app");
+const { registerSocketServer } = require("./socketServer");
+const server = http.createServer(app);
+// C. Kết nối vs Socket.io
+registerSocketServer(server);
 
 const DB = process.env.MONGO.replace("<PASSWORD>", process.env.MONGO_PASSWORD);
 
@@ -19,10 +24,11 @@ const DB = process.env.MONGO.replace("<PASSWORD>", process.env.MONGO_PASSWORD);
 mongoose.connect(DB).then(() => {
   console.log("DB connection successful!");
 });
-// C. START SERVER
+
+// D. START SERVER
 const port = process.env.PORT || 3000;
 
-const server = app.listen(port, () => {
+server.listen(port, () => {
   console.log(`App running on port ${port}...`);
 });
 

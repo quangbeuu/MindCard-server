@@ -61,12 +61,29 @@ const userSchema = new mongoose.Schema(
       default: true,
       select: false,
     },
+    classes: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "Class",
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },
     toObject: { virtuals: true },
   }
 );
+
+// Populate cho tất cả các query dùng find
+userSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "classes",
+  });
+  next();
+});
+
+// Virtual populate (tạo 1 mảng chứa id của các class nhưng ko lưu vào CSDL)
+userSchema.virtual("");
 
 // * Các thằng có typeAccount là facebook và google sẽ ko
 // phải validate
