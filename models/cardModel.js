@@ -5,31 +5,59 @@ const cardSchema = new mongoose.Schema({
     type: String,
     required: [true, "A card must have a word."],
   },
+  meaningUsers: {
+    type: String,
+    required: [true, "A card must have a definition."],
+  },
   meanings: [
     {
       partOfSpeech: {
         type: String,
-        default: "N",
-        enum: {
-          values: ["N", "V", "Adj", "Adv"],
-          message: "Part of Speech is either: N, V, Adj, Adv",
+        // default: "N",
+        // enum: {
+        //   values: ["N", "V", "Adj", "Adv"],
+        //   message: "Part of Speech is either: N, V, Adj, Adv",
+        // },
+      },
+      definitions: [
+        {
+          definition: String,
+          example: String,
+          synonyms: [String],
+          antonyms: [String],
         },
-        required: [true, "A card must have partOfSpeech."],
-      },
-      definition: {
-        type: String,
-        required: [true, "A card must have definition."],
-      },
-      example: String,
-      synonyms: [String],
-      antonyms: [String],
+      ],
     },
   ],
+  synonyms: [String],
+  antonyms: [String],
   images: String,
   pronounce: String,
   createdAt: { type: Date, default: Date.now() },
-  createdBy: String,
+  createdBy: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+  },
   slug: String,
+  audio: String,
+  setId: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Set",
+  },
+  isLearned: {
+    type: Boolean,
+    default: false,
+  },
+});
+
+// Populate cho tất cả các query dùng find
+cardSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "createdBy",
+    select: "_id name email avatarUrl",
+  });
+
+  next();
 });
 
 const Card = mongoose.model("Card", cardSchema);

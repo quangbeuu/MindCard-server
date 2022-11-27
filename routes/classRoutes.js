@@ -1,7 +1,18 @@
 const express = require("express");
 const classController = require("../controllers/classController");
+const memberInvitationRouter = require("./friendInvitationRoutes");
 
 const router = express.Router();
+
+// Nested Route
+router.use(
+  "/:classId/member-invitation",
+  (req, res, next) => {
+    req.classId = req.params;
+    next();
+  },
+  memberInvitationRouter
+);
 
 router
   .route("/")

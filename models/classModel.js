@@ -29,7 +29,12 @@ const classSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
-    createdBy: Array,
+    createdBy: [
+      {
+        type: mongoose.Schema.ObjectId,
+        ref: "User",
+      },
+    ],
     createdAt: { type: Date, default: Date.now() },
     imageCover: {
       type: String,
@@ -45,22 +50,26 @@ const classSchema = new mongoose.Schema(
 
 // Embedded data lq den host vao ClassModel
 
-classSchema.pre("save", async function (next) {
-  const hostPromises = this.createdBy.map(
-    async (id) => await User.findById(id, { name: 1, email: 1, avatarUrl: 1 })
-  );
+// classSchema.pre("save", async function (next) {
+//   const hostPromises = this.createdBy.map(
+//     async (id) => await User.findById(id, { name: 1, email: 1, avatarUrl: 1 })
+//   );
 
-  this.createdBy = await Promise.all(hostPromises);
+//   this.createdBy = await Promise.all(hostPromises);
 
-  next();
-});
+//   next();
+// });
 
 // Populate cho tất cả các query dùng find
 classSchema.pre(/^find/, function (next) {
   this.populate({
     path: "member",
-    select: "_id name email avatarUrl -classes",
+    select: "_id name email avatarUrl",
+  }).populate({
+    path: "createdBy",
+    select: "_id name email avatarUrl",
   });
+
   next();
 });
 

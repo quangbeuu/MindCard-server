@@ -1,7 +1,9 @@
 const express = require("express");
 const cardController = require("./../controllers/cardController");
 
-const router = express.Router();
+const router = express.Router({ mergeParams: true });
+
+router.route("/getAllCard").get(cardController.getAllCardInASet);
 
 router
   .route("/")

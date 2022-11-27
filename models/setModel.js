@@ -9,12 +9,28 @@ const setSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
-  createdBy: String,
+  createdBy: {
+    type: mongoose.Schema.ObjectId,
+    ref: "User",
+  },
   createdAt: { type: Date, default: Date.now() },
   numCards: Number,
   image: String,
   slug: String,
+  cardsList: {
+    type: mongoose.Schema.ObjectId,
+    ref: "Card",
+  },
 });
 
+// Populate cho tất cả các query dùng find
+setSchema.pre(/^find/, function (next) {
+  this.populate({
+    path: "createdBy",
+    select: "_id name email avatarUrl",
+  });
+
+  next();
+});
 const Set = mongoose.model("Set", setSchema);
 module.exports = Set;

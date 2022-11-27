@@ -6,6 +6,8 @@ const crypto = require("crypto");
 const types = ["default", "google", "facebook"];
 const typesForUnrequired = ["google", "facebook"];
 
+const Schema = mongoose.Schema;
+
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -65,6 +67,12 @@ const userSchema = new mongoose.Schema(
       {
         type: mongoose.Schema.ObjectId,
         ref: "Class",
+      },
+    ],
+    friends: [
+      {
+        type: Schema.Types.Object,
+        ref: "User",
       },
     ],
   },
