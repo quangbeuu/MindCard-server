@@ -6,6 +6,9 @@ const roomCreateHandler = (socket) => {
   const userId = socket.handshake.auth.user._id;
 
   const roomDetails = severStore.addNewActiveRoom(userId, socketId);
+
+  //
+
   socket.emit("room-create", {
     roomDetails,
   });
