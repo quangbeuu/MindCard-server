@@ -1,5 +1,6 @@
 const serverStore = require("../severStore");
 const friendUpdate = require("../socketHandlers/updates/updateFriend");
+const chatUpdate = require("./updates/updateChatRoom");
 
 const newConnectionHandler = async (socket, io) => {
   const userDetails = socket.handshake.auth?.user;
@@ -15,6 +16,9 @@ const newConnectionHandler = async (socket, io) => {
 
   // 2. Update friends list
   friendUpdate.updateFriends(userDetails.id);
+
+  // 3. Update rooms list
+  chatUpdate.updateChatRoom(userDetails.id);
 };
 
 module.exports = newConnectionHandler;

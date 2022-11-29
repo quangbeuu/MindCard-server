@@ -3,6 +3,8 @@ const FriendInvitation = require("../models/friendInvitationModel");
 
 const AppError = require("../utils/appError");
 const updateFriend = require("../socketHandlers/updates/updateFriend");
+const Conversation = require("../models/conversationsModel");
+const chatUpdate = require("../socketHandlers/updates/updateChatRoom");
 
 exports.postInvite = async (req, res, next) => {
   const { targetMailAddress } = req.body;
@@ -96,10 +98,6 @@ exports.postAccept = async (req, res) => {
     receiverUser.friends = [...receiverUser.friends, senderId];
     console.log("receiverUser", receiverUser);
 
-    // 4. Lưu vào CSDL
-    senderUser.save({ validateBeforeSave: false });
-    receiverUser.save({ validateBeforeSave: false });
-
     // 5. Xóa invitation khỏi Collection FriendInvitation
     await FriendInvitation.findByIdAndDelete(id);
 
@@ -109,6 +107,23 @@ exports.postAccept = async (req, res) => {
 
     // 7. Update lại friend pending invitations
     updateFriend.updateFriendPendingInvitations(receiverId.toString());
+
+    // 8. Tạo 1 room chat giữa 2 ng dùng này
+    const newConversation = await Conversation.create({
+      participants: [senderId, receiverId],
+    });
+
+    // 9. Cập nhật danh sách rooms của người dùng
+    senderUser.rooms = [...senderUser.rooms, newConversation._id];
+    receiverUser.rooms = [...receiverUser.rooms, newConversation._id];
+    // 4. Lưu vào CSDL
+    senderUser.save({ validateBeforeSave: false });
+    receiverUser.save({ validateBeforeSave: false });
+
+    // 9. Update room chat list của ng dùng
+
+    chatUpdate.updateChatRoom(senderId.toString());
+    chatUpdate.updateChatRoom(receiverId.toString());
 
     return res.status(201).send({
       status: "success",

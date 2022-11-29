@@ -75,6 +75,12 @@ const userSchema = new mongoose.Schema(
         ref: "User",
       },
     ],
+    rooms: [
+      {
+        type: Schema.Types.Object,
+        ref: "Conversation",
+      },
+    ],
   },
   {
     toJSON: { virtuals: true },

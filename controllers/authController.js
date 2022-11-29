@@ -6,7 +6,8 @@ const crypto = require("crypto");
 const User = require("../models/userModel");
 const catchAsync = require("../utils/catchAsync");
 const AppError = require("../utils/appError");
-const sendEmail = require("../utils/email");
+// const sendEmail = require("../utils/email");
+const Email = require("../utils/email");
 
 const signToken = (id) => {
   return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -196,24 +197,22 @@ exports.forgotPassword = async (req, res, next) => {
   // (Lưu resetToken vào DB (và ta sẽ ko validate trong trường hợp này)
   // 3. Send it to user's email
   // (đường dẫn mà ng dùng nhấn vào để lấy lại mkhau)
-  const resetURL = `${req.protocol}://${req.get(
-    "host"
-  )}/api/v1/users/resetPassword/${resetToken}`;
-  // (resetToken là token chưa dc mã hóa)
 
-  const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email.`;
+  // const message = `Forgot your password? Submit a PATCH request with your new password and passwordConfirm to: ${resetURL}.\nIf you didn't forget your password, please ignore this email.`;
   try {
-    await sendEmail({
-      email: user.email,
-      subject: "Your password reset token (valid for 10min)",
-      message,
-    });
+    const resetURL = `${req.protocol}://${req.get(
+      "host"
+    )}/api/v1/users/resetPassword/${resetToken}`;
+    // (resetToken là token chưa dc mã hóa)
+
+    await new Email(user, resetToken).sendPasswordReset();
 
     res.status(200).json({
       status: "success",
       message: "Token sent to email",
     });
   } catch (err) {
+    console.log(err);
     // Reset mã tbao token và thời gian token hết hạn
     user.passwordResetToken = undefined;
     user.passwordResetExpires = undefined;

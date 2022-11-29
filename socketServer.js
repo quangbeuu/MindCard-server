@@ -10,6 +10,7 @@ const getStudiedCardHandler = require("./socketHandlers/cards/getStudiedCardHand
 const getNotStudiedCardHandler = require("./socketHandlers/cards/getNotStudiedCardHandler");
 const directMessageHandler = require("./socketHandlers/directMessageHandler");
 const directChatHistoryHandler = require("./socketHandlers/directChatHistoryHandler");
+const roomCreateHandler = require("./socketHandlers/video/roomCreateHandler");
 
 const registerSocketServer = (server) => {
   const io = require("socket.io")(server, {
@@ -80,6 +81,11 @@ const registerSocketServer = (server) => {
     socket.on("direct-chat-history", (data) => {
       // console.log("history", data);
       directChatHistoryHandler(socket, data);
+    });
+
+    // Tạo phòng callvideo
+    socket.on("room-create", () => {
+      roomCreateHandler(socket);
     });
 
     // Khi ng dùng mất kết nối internet hoặc offline
