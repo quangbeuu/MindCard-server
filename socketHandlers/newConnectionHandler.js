@@ -1,6 +1,7 @@
 const serverStore = require("../severStore");
 const friendUpdate = require("../socketHandlers/updates/updateFriend");
 const chatUpdate = require("./updates/updateChatRoom");
+const videoUpdate = require("./updates/updateVideo");
 
 const newConnectionHandler = async (socket, io) => {
   const userDetails = socket.handshake.auth?.user;
@@ -19,6 +20,11 @@ const newConnectionHandler = async (socket, io) => {
 
   // 3. Update rooms list
   chatUpdate.updateChatRoom(userDetails.id);
+
+  // 4. Update video room list
+  setTimeout(() => {
+    videoUpdate.updateRooms(socket.id);
+  }, [500]);
 };
 
 module.exports = newConnectionHandler;

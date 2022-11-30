@@ -1,7 +1,7 @@
 const severStore = require("../../severStore");
 
-const updateRooms = (toSpecifiedTargetId = null) => {
-  const io = serverStore.getSocketServerInstance();
+const updateRooms = (toSpecifiedSocketId = null) => {
+  const io = severStore.getSocketServerInstance();
   // 1. Lấy list các phòng video call đang hoạt động
   const activeRooms = severStore.getActiveRooms();
 
