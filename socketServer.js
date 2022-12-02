@@ -13,6 +13,8 @@ const directChatHistoryHandler = require("./socketHandlers/directChatHistoryHand
 const roomCreateHandler = require("./socketHandlers/video/roomCreateHandler");
 const roomJoinHandler = require("./socketHandlers/video/roomJoinHandler");
 const leaveRoomHandler = require("./socketHandlers/video/leaveRoomHandler");
+const roomInitializeConnectionHandler = require("./socketHandlers/video/roomInitializeConnectionHandler");
+const roomSignalingDataHandler = require("./socketHandlers/video/roomSignalingDataHandler");
 
 const registerSocketServer = (server) => {
   const io = require("socket.io")(server, {
@@ -96,6 +98,14 @@ const registerSocketServer = (server) => {
 
     socket.on("room-leave", (data) => {
       leaveRoomHandler(socket, data);
+    });
+
+    socket.on("conn-init", (data) => {
+      roomInitializeConnectionHandler(socket, data);
+    });
+
+    socket.on("conn-signal", (data) => {
+      roomSignalingDataHandler(socket, data);
     });
 
     // Khi ng dùng mất kết nối internet hoặc offline
