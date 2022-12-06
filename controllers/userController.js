@@ -14,7 +14,7 @@ const filterObj = (obj, ...allowedFields) => {
 };
 
 exports.getAllSetOfUser = catchAsync(async (req, res, next) => {
-  console.log("hello");
+  console.log("hellosss");
 });
 
 exports.getMe = (req, res, next) => {
