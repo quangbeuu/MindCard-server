@@ -14,6 +14,7 @@ const globalErrorHandler = require("./controllers/errorController");
 const questionRoutes = require("./routes/questionRoutes");
 const testRoutes = require("./routes/testRoutes");
 const answerHistoryRoutes = require("./routes/answerHistoryRoutes");
+const scheduleRoutes = require("./routes/scheduleRoutes");
 
 // 1. Tạo ứng dụng express
 const app = express();
@@ -77,6 +78,8 @@ app.use("/api/v1/reviews", reviewRouter);
 app.use("/api/v1/sets", setRouter);
 app.use("/api/v1/questions", questionRoutes);
 app.use("/api/v1/test", testRoutes);
+
+app.use("/api/v1/schedule", scheduleRoutes);
 
 app.use("/api/v1/friend-invitation", friendInvitationRoutes);
 app.use("/api/v1/answer-history", answerHistoryRoutes);

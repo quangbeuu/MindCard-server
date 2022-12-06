@@ -13,6 +13,10 @@ const filterObj = (obj, ...allowedFields) => {
   return newObj;
 };
 
+exports.getAllSetOfUser = catchAsync(async (req, res, next) => {
+  console.log("hello");
+});
+
 exports.getMe = (req, res, next) => {
   req.params.id = req.user.id;
   next();

@@ -15,6 +15,10 @@ const roomJoinHandler = require("./socketHandlers/video/roomJoinHandler");
 const leaveRoomHandler = require("./socketHandlers/video/leaveRoomHandler");
 const roomInitializeConnectionHandler = require("./socketHandlers/video/roomInitializeConnectionHandler");
 const roomSignalingDataHandler = require("./socketHandlers/video/roomSignalingDataHandler");
+const createScheduleHandler = require("./socketHandlers/schedule/createScheduleHandler");
+const updateScheduleHandler = require("./socketHandlers/schedule/updateScheduleHandler");
+const deleteScheduleHandler = require("./socketHandlers/schedule/deleteScheduleHandler");
+const updateCardHandler = require("./socketHandlers/cards/updateCardHandler");
 
 const registerSocketServer = (server) => {
   const io = require("socket.io")(server, {
@@ -77,6 +81,12 @@ const registerSocketServer = (server) => {
       getNotStudiedCardHandler(id, socket);
     });
 
+    socket.on("update-card", (data) => {
+      updateCardHandler(data, socket);
+    });
+
+    // Message
+
     socket.on("direct-message", (data) => {
       // console.log("direct", data);
       directMessageHandler(socket, data);
@@ -106,6 +116,22 @@ const registerSocketServer = (server) => {
 
     socket.on("conn-signal", (data) => {
       roomSignalingDataHandler(socket, data);
+    });
+
+    // Schedule
+    socket.on("join-schedule", (data) => {
+      socket.join(data);
+    });
+
+    socket.on("create-schedule", (data) => {
+      createScheduleHandler(socket, data);
+    });
+
+    socket.on("update-schedule", (data) => {
+      updateScheduleHandler(socket, data);
+    });
+    socket.on("delete-schedule", (data) => {
+      deleteScheduleHandler(socket, data);
     });
 
     // Khi ng dùng mất kết nối internet hoặc offline
